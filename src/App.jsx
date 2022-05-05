@@ -1,66 +1,50 @@
 import { useState } from 'react'
-import simpleTableCreator from './simpleTableCreator'
-
-function copyToClipboard(text) {
-  var dummy = document.createElement("textarea");
-  document.body.appendChild(dummy);
-  dummy.value = text;
-  dummy.select();
-  document.execCommand("copy");
-  document.body.removeChild(dummy);
-}
-
-const Btn = ({title, data}) => {
-
-  const [copied, setCopied] = useState(false)
-
-  const handleCopiedData = () => {
-    copyToClipboard(data)
-    setCopied(true)
-  }
-
-  return (
-    <>
-      <button
-      style={{ width: '60px' }}
-        onClick={handleCopiedData}
-      >
-        {
-          !copied ? title : "Copied"
-        }
-      </button>
-    </>
-  )
-}
+import simpleTableCreator from './utils/simpleTableCreator'
+import Btn from './components/Btn'
 
 const App = () =>  {
-  const [data, setData] = useState('')
+  const [text, setText] = useState('')
   const [table, setTable] = useState([])
+  const [view, setView] = useState(false)
+  const [fullTable, setFullTable] = useState('')
 
   const handleCreateSimpleTable = () => {
-    setTable([])
-    setTable(simpleTableCreator(data))
+    setView(false)
+    setTable(simpleTableCreator(text))
+    setFullTable(simpleTableCreator(text, 1))
+    setView(true)
   }
+
   return (
     <div>
+      <p>TEST: 2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2</p>
       <input type="text"
-        onChange={e => setData(e.target.value)}
-      />
+        style={{width: '300px'}}
+        onChange={e => setText(e.target.value)}
+      /><br />
       <button
         onClick={handleCreateSimpleTable}
-      >Crear</button><br/><br/>
+      >Crear</button>
+      <br/><br/>
       {
-        table.length > 0 && 
+        view && 
+        <>
+        <Btn
+        title={'Copy Full Table'}
+        data={fullTable}
+      /><br></br><br />
+         {
+          table.length > 0 && 
           table.map((e,i) => {
             return (
                 <Btn
-                  pick={pick}
                   key={i}
                   title={e[0]}
                   data={e[1]}
                 />
             )
-          })
+          })}
+        </>
       }
     </div>
   )
