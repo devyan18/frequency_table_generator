@@ -1,53 +1,91 @@
-import { useState } from 'react'
-import simpleTableCreator from './utils/simpleTableCreator'
-import Btn from './components/Btn'
+import { useState, useEffect } from 'react'
+import {
+  Button,
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress
+} from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { getHost } from './utils/getHost';
+import copyToClipboard from './utils/copyToClipboard';
 
-const App = () =>  {
-  const [text, setText] = useState('')
-  const [table, setTable] = useState([])
-  const [view, setView] = useState(false)
-  const [fullTable, setFullTable] = useState('')
+export default function App(){
 
-  const handleCreateSimpleTable = () => {
-    setView(false)
-    setTable(simpleTableCreator(text))
-    setFullTable(simpleTableCreator(text, 1))
-    setView(true)
+  const [ table, setTable ] = useState([])
+  const [ isLoading, setIsLoading ] = useState(null) 
+
+  const getData = () => {
+    setIsLoading(true)
+    fetch(`${getHost()}/st`, {
+      method: 'POST',
+      body: JSON.stringify({data: '2,3,5,3,2,6,3,2,2,1,0,1,0,4,1,2,1,4,5,0,3,4,2,1,2,2,0,1,0,2'}),
+      headers: { 'Content-Type': 'application/json'} 
+    }).then(data => data.json())
+    .then(res => {setTable(res?.simpleTable); setIsLoading(false)})
   }
 
   return (
-    <div>
+    <>
       <p>TEST: 2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2</p>
-      <input type="text"
+      <Input type="text"
         style={{width: '300px'}}
-        onChange={e => setText(e.target.value)}
       /><br />
-      <button
-        onClick={handleCreateSimpleTable}
-      >Crear</button>
-      <br/><br/>
+      <Button onClick={getData}>Create Table</Button>
+      <br  />
       {
-        view && 
-        <>
-        <Btn
-        title={'Copy Full Table'}
-        data={fullTable}
-      /><br></br><br />
-         {
-          table.length > 0 && 
-          table.map((e,i) => {
-            return (
-                <Btn
-                  key={i}
-                  title={e[0]}
-                  data={e[1]}
-                />
-            )
-          })}
-        </>
+      table?.verticalTable?.length > 0 && !isLoading &&
+      <>
+      <div className={'table_container'}>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650, background: '#fff' }} size="small" aria-label="a dense table">
+          <TableHead sx={{background: '#1876D2'}}>
+            <TableRow>
+              <TableCell style={{ color: '#FFF'}} align='left'>Xi</TableCell>
+              <TableCell style={{ color: '#FFF'}} align="left">fi</TableCell>
+              <TableCell style={{ color: '#FFF'}} align="left">Fi</TableCell>
+              <TableCell style={{ color: '#FFF'}} align="left">ri</TableCell>
+              <TableCell style={{ color: '#FFF'}} align="left">Ri</TableCell>
+              <TableCell style={{ color: '#FFF'}} align="left">pi%</TableCell>
+              <TableCell style={{ color: '#FFF'}} align="left">Pi%</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {table.verticalTable.map((e,i) => (
+              <TableRow 
+                key={i}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                <TableCell style={{ color: '#000'}} align='left'>{e[0]}</TableCell>
+                <TableCell style={{ color: '#000'}} align='left'>{e[1]}</TableCell>
+                <TableCell style={{ color: '#000'}} align='left'>{e[2]}</TableCell>
+                <TableCell style={{ color: '#000'}} align='left'>{e[3]}</TableCell>
+                <TableCell style={{ color: '#000'}} align='left'>{e[4]}</TableCell>
+                <TableCell style={{ color: '#000'}} align='left'>{e[5]}</TableCell>
+                <TableCell style={{ color: '#000'}} align='left'>{e[6]}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      </div>
+      <Button
+      endIcon={<ContentCopyIcon />}
+      size='small'
+      variant='contained'
+      onClick={() => copyToClipboard(table.simpleTableExcelFormated)}
+      >Copy table</Button>
+      </>
       }
-    </div>
+      {
+        isLoading == true &&
+        <CircularProgress  /> 
+      }
+    </>
   )
 }
-
-export default App
