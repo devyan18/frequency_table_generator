@@ -15,9 +15,26 @@
 
 .table_container {
   margin: 20px 0px;
-  max-width: 70vw;
+  max-width: 80vw;
 }
 
 table {
   border: 1px solid #1876D2
+}
+
+.data_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.getData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  align-content: center;
+  gap: 20px;
+  margin: 20px 0px;
 }
