@@ -42,6 +42,7 @@ export default function App(){
         <span>TEST: 2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2</span>
         <Button
           variant='text'
+          color='inherit'
           onClick={() => copyToClipboard('2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2')}
         ><ContentCopyIcon /></Button>
       </div>
