@@ -1,5 +1,9 @@
-function getSimpleTable(data){
+function roundedWith2Decimals (num) {
+  num = Math.round((num + Number.EPSILON) * 100) / 100
+  return num
+}
 
+function getSimpleTable(data, TT){
   data = data.split(',').map(e => e.trim() && parseFloat(e))
   let ARR_fi = [], ARR_Xi = []
   const N = data.length
@@ -105,13 +109,16 @@ function getSimpleTable(data){
 
   let Varianza = 0
 
-  for (let x=0;x<verticalTable[0].length;x++){
-    Varianza += (verticalTable[0][x]**2)*verticalTable[0][x]
+  for (let x=0;x<verticalTable.length;x++){
+    Varianza += (verticalTable[x][0]**2)*verticalTable[x][1]
+    console.log("Xi^2: ", verticalTable[x][0]**2," * fi: ",verticalTable[x][1], " = ", Varianza)
   }
-  Varianza /= N;
+  console.log(verticalTable)
+  Varianza /= (N-TT);
   Varianza -= Media**2
-  let DesviacionEstandar = Math.sqrt(Varianza)
-  let CoeficienteVariacion = DesviacionEstandar/Media
+  Varianza = roundedWith2Decimals(Varianza)
+  let DesviacionEstandar = roundedWith2Decimals(Math.sqrt(Varianza))
+  let CoeficienteVariacion = roundedWith2Decimals(DesviacionEstandar/Media)
 
   const tendenciaCentral = { modaData, Mediana, Media }
   const parametrosDeispercion = { Rango, Varianza, DesviacionEstandar, CoeficienteVariacion}

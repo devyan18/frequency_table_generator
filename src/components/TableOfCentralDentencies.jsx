@@ -11,13 +11,14 @@ import {
   Paper
 } from '@mui/material';
 
-export default function TableOfCentralTendencies({tendenciaCentral}) {
+export default function TableOfCentralTendencies({tendenciaCentral, N}) {
   const {modaData, Mediana, Media} = tendenciaCentral
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650, background: '#fff' }} size="small" aria-label="a dense table">
         <TableHead sx={{ background: '#1876D2' }}>
           <TableRow>
+            <TableCell style={{ color: '#FFF' }} align='center'>Total</TableCell>
             <TableCell style={{ color: '#FFF' }} align='center'>Moda</TableCell>
             <TableCell style={{ color: '#FFF' }} align="center">Media</TableCell>
             <TableCell style={{ color: '#FFF' }} align="center">Mediana</TableCell>
@@ -25,6 +26,7 @@ export default function TableOfCentralTendencies({tendenciaCentral}) {
         </TableHead>
         <TableBody>
           <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableCell style={{ color: '#000' }} align='center'>{N}</TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{modaData.Mo}</TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{Media}</TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{Mediana}</TableCell>
@@ -33,26 +35,30 @@ export default function TableOfCentralTendencies({tendenciaCentral}) {
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
+                variant='contained'
+                onClick={() => copyToClipboard(`N\n${N}`)}
+              >Copiar N</Button>}
+            </TableCell>
+            <TableCell style={{ color: '#000' }} align='center'>{
+              <Button
+                endIcon={<ContentCopyIcon />}
                 variant='contained'
                 onClick={() => copyToClipboard(`Moda\n${modaData.Mo}`)}
-              >Copy Moda</Button>}
+              >Copiar Moda</Button>}
             </TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
                 variant='contained'
                 onClick={() => copyToClipboard(`Media\n${Media}`)}
-              >Copy Media</Button>}
+              >Copiar Media</Button>}
             </TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
                 variant='contained'
                 onClick={() => copyToClipboard(`Mediana\n${Mediana}`)}
-              >Copy Mediana</Button>}
+              >Copiar Mediana</Button>}
             </TableCell>
           </TableRow>
         </TableBody>

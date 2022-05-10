@@ -35,34 +35,30 @@ export default function TableOfDesviacion({parametrosDeispercion}) {
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
                 variant='contained'
                 onClick={() => copyToClipboard(`Rango\n${Rango}`)}
-              >Copy Rango</Button>}
+              >Copiar Rango</Button>}
             </TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
                 variant='contained'
                 onClick={() => copyToClipboard(`Varianza\n${Varianza}`)}
-              >Copy Varianza</Button>}
+              >Copiar Varianza</Button>}
             </TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
                 variant='contained'
                 onClick={() => copyToClipboard(`DesviacionEstandar\n${DesviacionEstandar}`)}
-              >Copy DesviacionEstandar</Button>}
+              >Copiar DesviacionEstandar</Button>}
             </TableCell>
             <TableCell style={{ color: '#000' }} align='center'>{
               <Button
                 endIcon={<ContentCopyIcon />}
-                size='small'
                 variant='contained'
                 onClick={() => copyToClipboard(`Coeficiente de Variacion\n${CoeficienteVariacion}`)}
-              >Copy Coeficiente de Variacion</Button>}
+              >Copiar Coeficiente de Variacion</Button>}
             </TableCell>
           </TableRow>
         </TableBody>

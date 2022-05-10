@@ -20,10 +20,7 @@ export default function App(){
     let count = e.length
     for(let i=0;i<count;i++){
       e = e.replace(/[a-zA-Z]/, '')
-      e = e.replace(' ', ',')
-      e = e.replace(',,', ',')
-      e = e.replace(' ', '')
-      e = e.trim()
+      e = e.replace(' ', ',').replace(',,', ',').replace(' ', '').trim()
     }
     if(e[-1] && ",")e = e.slice(0,-2)
     setText(e)
@@ -32,43 +29,47 @@ export default function App(){
 
 
   const getData = () => {
-    const res = getSimpleTable(text)
-    setTable(res)
-    setViewTable(true)
-    setText('')
+    if(text!==''){
+      const res = getSimpleTable(text, typeOfData)
+      setTable(res)
+      setViewTable(true)
+    }
   }
 
   return (
     <>
-      <p>TEST: 2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2</p>
-      <div className='getData'>
-        <div>
-
+      <div className='test_container'>
+        <span>TEST: 2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2</span>
+        <Button
+          variant='text'
+          onClick={() => copyToClipboard('2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2')}
+        ><ContentCopyIcon /></Button>
+      </div>
+      <div className='text_head'>
         <TextField type="text"
           style={{width: '500px'}}
           onChange={handleGetAndChangeData}
-          value={text} id="outlined-basic" label="Inset Data" variant="outlined"
-          size='small'
-          />
-        <FormControl>
-          <InputLabel id="demo-simple-select-label">Type Of Data</InputLabel>
+          value={text} id="outlined-basic" label="Ingresar datos" variant="outlined"
+        />
+        <FormControl sx={{width: '120px'}}>
+          <InputLabel id="demo-simple-select-label">Tipos de Datos</InputLabel>
           <Select
-            size='small'
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={typeOfData}
-            label="Type Of Data"
+            label="Tipos de Datos"
             onChange={(e) => setTypeOfData(e.target.value)}
-            >
+          >
             <MenuItem value={0}>Población</MenuItem>
             <MenuItem value={1}>Muestra</MenuItem>
           </Select>
         </FormControl>
-            </div>
+      </div>
+      <div className='getData'>
         <Button 
           onClick={getData}
           variant='contained'
-        >Create Table</Button>
+        >Crear Tabla</Button>
       </div>
       {
       viewTable && !!table &&
@@ -80,14 +81,14 @@ export default function App(){
       <div className='getData'>
         <Button
           endIcon={<ContentCopyIcon />}
-          size='small'
           variant='contained'
           onClick={() => copyToClipboard(table?.simpleTableExcelFormated)}
-        >Copy table</Button>
+        >Copiar tabla</Button>
         </div>
         <div className='getData'>
           <h3>Tendencias centrales</h3>
-          <TableOfCentralDentencies 
+          <TableOfCentralDentencies
+            N={table.N} 
             tendenciaCentral={table?.tendenciaCentral}
           />
           <h3>Parámetros de disperción</h3>
