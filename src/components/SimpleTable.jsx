@@ -12,7 +12,7 @@ export default function SimpleTable({verticalTable}) {
 
   return (
     <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650, background: '#fff' }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 700, background: '#fff' }} size="small" aria-label="a dense table">
           <TableHead sx={{background: '#1876D2'}}>
             <TableRow>
               <TableCell style={{ color: '#FFF'}} align='left'>Xi</TableCell>

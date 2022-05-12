@@ -1,13 +1,46 @@
 function roundedWith2Decimals (num) {
-  num = Math.round((num + Number.EPSILON) * 100) / 100
-  return num
+  return Math.round((num + Number.EPSILON) * 100) / 100
 }
 
-function getSimpleTable(data, TT){
-  data = data.split(',').map(e => e.trim() && parseFloat(e))
-  let ARR_fi = [], ARR_Xi = []
-  const N = data.length
-  const filteredArray = data.filter((ele,pos)=>data.indexOf(ele) == pos).sort((a,b) => a-b)
+function getDataFiltrered(data){
+  return data.split(',').map(e => e.trim() && parseFloat(e))
+}
+
+function getDiferentDatas(data) {
+  return data.filter((e,i) => data.indexOf(e) == i).sort((a,b) => a-b)
+}
+
+function getSimpleTableExcelFormated(data){
+  let simpleTableExcelFormated = ''
+  for (let x=0;x<data.length;x++){
+    for (let y=0;y<data[0].length;y++){
+      if(y>0) simpleTableExcelFormated += "	"
+      simpleTableExcelFormated += `${data[x][y]}`
+    }
+    simpleTableExcelFormated += "\n"
+  }
+  return simpleTableExcelFormated
+}
+
+function formatedSimpleTable(data){
+  let simpleTableFormated = []
+
+  for (let x = 0; x < data[0].length; x++) {
+    simpleTableFormated[x] = [data[0][x]]
+  }
+
+  for(let x=0;x<data[0].length;x++){
+    let formatData = ''
+    for(let y=0;y<data.length;y++){
+      y>0 ? formatData += `\n${data[y][x]}`
+          : formatData += `${data[y][x]}`
+    }
+    simpleTableFormated[x][1] = formatData
+  }
+  return simpleTableFormated
+}
+
+function createSimpleTable(data, ARR_fi, ARR_Xi, filteredArray, N){
   let simpleTable = [0, 0, 0, 0]
   for (let x = 0; x < filteredArray.length; x++) {
     simpleTable[x] = []
@@ -30,32 +63,23 @@ function getSimpleTable(data, TT){
   }
   const names = ["Xi","fi","Fi","ri","Ri","pi","Pi"]
   simpleTable = [names, ...simpleTable]
+  return simpleTable
+}
 
-  let simpleTableFormated = []
+function createVerticalTable(horizontalTable){
+  let verticalTable = []
 
-  for (let x = 0; x < simpleTable[0].length; x++) {
-    simpleTableFormated[x] = [simpleTable[0][x]]
-  }
-
-  for(let x=0;x<simpleTable[0].length;x++){
-    let formatData = ''
-    for(let y=0;y<simpleTable.length;y++){
-      y>0 ? formatData += `\n${simpleTable[y][x]}`
-          : formatData += `${simpleTable[y][x]}`
+  for(let i=0;i<horizontalTable[0].length; i++){
+    verticalTable[i] = []
+    for(let x=0; x<horizontalTable.length; x++){
+      verticalTable[i][x] = horizontalTable[x][i]
     }
-    simpleTableFormated[x][1] = formatData
   }
+  return verticalTable
+}
 
-  let simpleTableExcelFormated = ''
+function createHorizontalTable(simpleTable){
   let horizontalTable = []
-  for (let x=0;x<simpleTable.length;x++){
-    for (let y=0;y<simpleTable[0].length;y++){
-      if(y>0) simpleTableExcelFormated += "	"
-      simpleTableExcelFormated += `${simpleTable[x][y]}`
-    }
-    simpleTableExcelFormated += "\n"
-  }
-
   
   for (let x = 0; x < simpleTable[0].length; x++) {
     horizontalTable[x] = []
@@ -63,7 +87,10 @@ function getSimpleTable(data, TT){
       horizontalTable[x][y] = simpleTable[y][x]      
     }
   }
+  return horizontalTable
+}
 
+function getCentralTrend(ARR_fi, ARR_Xi, data, N){
   const element = Math.max(...ARR_fi)
   let indices = []
   let idx = ARR_fi.indexOf(element)
@@ -71,7 +98,6 @@ function getSimpleTable(data, TT){
     indices.push(idx)
     idx = ARR_fi.indexOf(element, idx + 1)
   }
-  console.log(indices)
   const Mo = ARR_Xi.filter(e => indices.includes(e))
   const modaData = {
     Mo,
@@ -92,18 +118,16 @@ function getSimpleTable(data, TT){
   for (let x=0;x<ARR_Xi.length;x++){
     Media += ARR_Xi[x]*ARR_fi[x]
   }
+  Media /= N
 
-  let verticalTable = []
+  Media = roundedWith2Decimals(Media)
+  return { modaData, Mediana, Media }
+}
 
-  for(let i=0;i<horizontalTable[0].length; i++){
-    verticalTable[i] = []
-    for(let x=0; x<horizontalTable.length; x++){
-      verticalTable[i][x] = horizontalTable[x][i]
-    }
-  }
+function getDispersionParameters(verticalTable, N, filteredArray, Media, TT){
   const [a, ...restOfVerticalTable] = verticalTable
   verticalTable = [...restOfVerticalTable]
-  Media /= N
+  
 
   let Rango = Math.max(...filteredArray)-Math.min(...filteredArray)
 
@@ -111,17 +135,28 @@ function getSimpleTable(data, TT){
 
   for (let x=0;x<verticalTable.length;x++){
     Varianza += (verticalTable[x][0]**2)*verticalTable[x][1]
-    console.log("Xi^2: ", verticalTable[x][0]**2," * fi: ",verticalTable[x][1], " = ", Varianza)
   }
-  console.log(verticalTable)
   Varianza /= (N-TT);
   Varianza -= Media**2
   Varianza = roundedWith2Decimals(Varianza)
   let DesviacionEstandar = roundedWith2Decimals(Math.sqrt(Varianza))
   let CoeficienteVariacion = roundedWith2Decimals(DesviacionEstandar/Media)
 
-  const tendenciaCentral = { modaData, Mediana, Media }
-  const parametrosDeispercion = { Rango, Varianza, DesviacionEstandar, CoeficienteVariacion}
+  return { Rango, Varianza, DesviacionEstandar, CoeficienteVariacion}
+}
+
+function getSimpleTable(data, TT){  
+  data = getDataFiltrered(data)
+  let ARR_fi = [], ARR_Xi = []
+  const N = data.length
+  const filteredArray = getDiferentDatas(data)
+  const simpleTable = createSimpleTable(data, ARR_fi, ARR_Xi, filteredArray, N)
+  const simpleTableFormated = formatedSimpleTable(simpleTable)
+  const horizontalTable = createHorizontalTable(simpleTable)
+  const verticalTable = createVerticalTable(horizontalTable)
+  const tendenciaCentral = getCentralTrend(ARR_fi, ARR_Xi, data, N)
+  const parametrosDeispercion = getDispersionParameters(verticalTable, N, filteredArray, tendenciaCentral.Media, TT)
+  const simpleTableExcelFormated = getSimpleTableExcelFormated(data)
 
   return { N, simpleTableExcelFormated, simpleTableFormated, horizontalTable, verticalTable, tendenciaCentral, parametrosDeispercion}
 }
