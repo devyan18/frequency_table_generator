@@ -10,10 +10,13 @@ import TableOfDesviacion from './components/TableOfDeviacion'
 
 export default function App(){
 
+  const TEST_DATA = '2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2'
+
   const [ table, setTable ] = useState([])
   const [ text, setText ] = useState('') 
   const [ viewTable, setViewTable ] = useState(false)
   const [ typeOfData, setTypeOfData ] = useState(0)
+  const [ typeOfTable, setTypeOfTable ] = useState(0)
 
   const handleGetAndChangeData = (e) => {
     e = e.target.value
@@ -29,7 +32,8 @@ export default function App(){
 
 
   const getData = () => {
-    if(text!==''){
+    setTable(null)
+    if(text!=='' && typeOfTable == 0){
       const res = getSimpleTable(text, typeOfData)
       setTable(res)
       setViewTable(true)
@@ -39,11 +43,11 @@ export default function App(){
   return (
     <>
       <div className='test_container'>
-        <span>TEST: 2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2</span>
+        <span>TEST: {TEST_DATA}</span>
         <Button
           variant='text'
           color='inherit'
-          onClick={() => copyToClipboard('2, 3, 5, 3, 2, 6, 3, 2, 2, 1, 0, 1, 0, 4, 1, 2, 1, 4, 5, 0, 3, 4, 2, 1, 2, 2, 0, 1, 0, 2')}
+          onClick={() => copyToClipboard(TEST_DATA)}
         ><ContentCopyIcon /></Button>
       </div>
       <div className='text_head'>
@@ -52,6 +56,7 @@ export default function App(){
           onChange={handleGetAndChangeData}
           value={text} id="outlined-basic" label="Ingresar datos" variant="outlined"
         />
+
         <FormControl sx={{width: '120px'}}>
           <InputLabel id="demo-simple-select-label">Tipos de Datos</InputLabel>
           <Select
@@ -65,7 +70,23 @@ export default function App(){
             <MenuItem value={1}>Muestra</MenuItem>
           </Select>
         </FormControl>
+        
       </div>
+      <div className="text_head" style={{marginTop: '30px'}}>
+        <FormControl sx={{width: '200px'}}>
+          <InputLabel id="demo1-simple-select-label">Tipo de tabla</InputLabel>
+          <Select
+            labelId="demo1-simple-select-label"
+            id="demo1-simple-select"
+            value={typeOfTable}
+            label="Tipo de tabla"
+            onChange={(e) => setTypeOfTable(e.target.value)}
+          >
+            <MenuItem value={0}>Simple</MenuItem>
+            <MenuItem value={1}>Intervalos</MenuItem>
+          </Select>
+        </FormControl>
+          </div>
       <div className='getData'>
         <Button 
           onClick={getData}
